@@ -1,0 +1,1330 @@
+<!DOCTYPE html>
+<html lang="sr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vodič za evidentiranje stvarnih vlasnika - Jednostavan postupak</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #0C4076 0%, #1a5fa1 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            overflow: hidden;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #0C4076 0%, #1a5fa1 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+        
+        .header h1 {
+            font-size: 28px;
+            margin-bottom: 10px;
+        }
+        
+        .header .deadline {
+            background: #ff6b6b;
+            display: inline-block;
+            padding: 10px 20px;
+            border-radius: 25px;
+            font-weight: bold;
+            font-size: 18px;
+            margin-top: 15px;
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+        
+        .content {
+            padding: 40px;
+        }
+        
+        .step {
+            display: none;
+        }
+        
+        .step.active {
+            display: block;
+            animation: fadeIn 0.5s;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: #e0e0e0;
+            border-radius: 10px;
+            margin-bottom: 30px;
+            overflow: hidden;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #0C4076 0%, #1a5fa1 100%);
+            transition: width 0.3s ease;
+            border-radius: 10px;
+        }
+        
+        .question {
+            background: #f8f9fa;
+            padding: 25px;
+            border-radius: 15px;
+            margin-bottom: 25px;
+            border-left: 5px solid #0C4076;
+        }
+        
+        .question h3 {
+            color: #2c3e50;
+            margin-bottom: 20px;
+            font-size: 20px;
+        }
+        
+        .options {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+        
+        .option {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            border: 2px solid #e0e0e0;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .option:hover {
+            border-color: #0C4076;
+            transform: translateX(5px);
+            box-shadow: 0 5px 15px rgba(12, 64, 118, 0.2);
+        }
+        
+        .option input[type="radio"] {
+            width: 20px;
+            height: 20px;
+            cursor: pointer;
+        }
+        
+        .option input[type="radio"]:checked {
+            accent-color: #0C4076;
+        }
+        
+        .option.selected {
+            border-color: #0C4076;
+            background: #e3f2fd;
+            box-shadow: 0 5px 15px rgba(12, 64, 118, 0.3);
+        }
+        
+        .option label {
+            cursor: pointer;
+            flex: 1;
+            font-size: 16px;
+        }
+        
+        .info-box {
+            background: #e3f2fd;
+            border-left: 5px solid #2196f3;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+        }
+        
+        .info-box.warning {
+            background: #fff3e0;
+            border-left-color: #ff9800;
+        }
+        
+        .info-box.success {
+            background: #e8f5e9;
+            border-left-color: #4caf50;
+        }
+        
+        .info-box h4 {
+            margin-bottom: 10px;
+            color: #1976d2;
+        }
+        
+        .info-box.warning h4 {
+            color: #f57c00;
+        }
+        
+        .info-box.success h4 {
+            color: #388e3c;
+        }
+        
+        .buttons {
+            display: flex;
+            gap: 15px;
+            margin-top: 30px;
+            justify-content: space-between;
+        }
+        
+        .btn {
+            padding: 15px 30px;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: 600;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, #0C4076 0%, #1a5fa1 100%);
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(12, 64, 118, 0.3);
+        }
+        
+        .btn-secondary {
+            background: #e0e0e0;
+            color: #333;
+        }
+        
+        .btn-secondary:hover {
+            background: #d0d0d0;
+        }
+        
+        .result-panel {
+            background: linear-gradient(135deg, #0C4076 0%, #1a5fa1 100%);
+            color: white;
+            padding: 30px;
+            border-radius: 15px;
+            margin-top: 20px;
+        }
+        
+        .result-panel h3 {
+            margin-bottom: 20px;
+            font-size: 24px;
+        }
+        
+        .action-steps {
+            background: rgba(255,255,255,0.1);
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 20px;
+        }
+        
+        .action-steps ol {
+            padding-left: 20px;
+        }
+        
+        .action-steps li {
+            margin: 12px 0;
+            line-height: 1.6;
+        }
+        
+        .link-box {
+            background: white;
+            color: #2c3e50;
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 20px;
+        }
+        
+        .link-box a {
+            color: #0C4076;
+            text-decoration: none;
+            font-weight: bold;
+        }
+        
+        .link-box a:hover {
+            text-decoration: underline;
+        }
+        
+        /* ANIMATED SCROLL ARROW */
+        .scroll-arrow {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 1000;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+        }
+        
+        .scroll-arrow.show {
+            opacity: 1;
+            visibility: visible;
+            animation: bounce 2s infinite;
+        }
+        
+        .scroll-arrow-inner {
+            background: #0C4076;
+            color: white;
+            padding: 15px 25px;
+            border-radius: 50px;
+            box-shadow: 0 10px 30px rgba(12, 64, 118, 0.4);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+        
+        .scroll-arrow-inner:hover {
+            background: #1a5fa1;
+            transform: scale(1.05);
+        }
+        
+        .arrow-icon {
+            font-size: 24px;
+            animation: arrowBounce 1s infinite;
+        }
+        
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% {
+                transform: translateX(-50%) translateY(0);
+            }
+            40% {
+                transform: translateX(-50%) translateY(-10px);
+            }
+            60% {
+                transform: translateX(-50%) translateY(-5px);
+            }
+        }
+        
+        @keyframes arrowBounce {
+            0%, 100% {
+                transform: translateY(0);
+            }
+            50% {
+                transform: translateY(5px);
+            }
+        }
+        
+        .print-only {
+            display: none;
+        }
+        
+        /* ===== RESPONSIVE - MOBILNI UREĐAJI ===== */
+        @media (max-width: 768px) {
+            body {
+                padding: 10px;
+            }
+            
+            .header {
+                padding: 20px 15px;
+            }
+            
+            .header h1 {
+                font-size: 20px;
+            }
+            
+            .header p {
+                font-size: 14px;
+            }
+            
+            .header .deadline {
+                font-size: 14px;
+                padding: 8px 16px;
+            }
+            
+            .content {
+                padding: 20px 15px;
+            }
+            
+            .question {
+                padding: 15px;
+            }
+            
+            .question h3 {
+                font-size: 18px;
+            }
+            
+            .option {
+                padding: 15px;
+            }
+            
+            .option label {
+                font-size: 14px;
+            }
+            
+            .info-box {
+                padding: 15px;
+                font-size: 14px;
+            }
+            
+            .info-box h4 {
+                font-size: 16px;
+            }
+            
+            .btn {
+                padding: 12px 20px;
+                font-size: 14px;
+            }
+            
+            .buttons {
+                flex-direction: column;
+                gap: 10px;
+            }
+            
+            .result-panel {
+                padding: 20px 15px;
+            }
+            
+            .result-panel h3 {
+                font-size: 20px;
+            }
+            
+            .action-steps {
+                padding: 15px;
+            }
+            
+            .action-steps li {
+                font-size: 14px;
+            }
+            
+            .link-box {
+                padding: 15px;
+                font-size: 14px;
+            }
+            
+            .scroll-arrow-inner {
+                padding: 12px 20px;
+                font-size: 14px;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .header h1 {
+                font-size: 18px;
+            }
+            
+            .question h3 {
+                font-size: 16px;
+            }
+            
+            .container {
+                border-radius: 10px;
+            }
+        }
+        
+        @media print {
+            body {
+                background: white;
+                padding: 0;
+            }
+            
+            .container {
+                box-shadow: none;
+                border-radius: 0;
+            }
+            
+            .scroll-arrow {
+                display: none !important;
+            }
+            
+            .buttons {
+                display: none !important;
+            }
+            
+            .progress-bar {
+                display: none !important;
+            }
+            
+            .step {
+                display: block !important;
+            }
+            
+            #step0, #step1, #step2, #step3, #step4 {
+                display: none !important;
+            }
+            
+            #step5 {
+                display: block !important;
+            }
+            
+            .print-only {
+                display: block !important;
+            }
+            
+            .result-panel {
+                background: #0C4076 !important;
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .scroll-arrow-inner {
+                padding: 12px 20px;
+                font-size: 14px;
+            }
+            
+            .content {
+                padding: 20px;
+            }
+        }
+    
+        
+        /* Additional Mobile Optimizations */
+        @media (max-width: 768px) {
+            /* Smanjenje velikih padding-a */
+            [style*="padding: 25px"],
+            [style*="padding: 30px"] {
+                padding: 15px !important;
+            }
+            
+            [style*="margin-top: 25px"],
+            [style*="margin-top: 30px"],
+            [style*="margin-bottom: 25px"],
+            [style*="margin-bottom: 30px"] {
+                margin-top: 15px !important;
+                margin-bottom: 15px !important;
+            }
+            
+            /* Korak 5 optimizacije */
+            #step5 > div {
+                margin-top: 10px !important;
+                margin-bottom: 10px !important;
+            }
+            
+            #step5 .result-panel,
+            #step5 .link-box {
+                padding: 15px !important;
+                margin: 10px 0 !important;
+            }
+            
+            /* Manji fontovi za bolju čitljivost */
+            body {
+                font-size: 14px !important;
+            }
+            
+            .question h3 {
+                font-size: 17px !important;
+                line-height: 1.4 !important;
+            }
+            
+            .info-box,
+            .info-box p,
+            .info-box li {
+                font-size: 14px !important;
+                line-height: 1.6 !important;
+            }
+            
+            .content {
+                padding: 15px !important;
+            }
+        }
+        
+        /* Extra small screens - ispod 480px */
+        @media (max-width: 480px) {
+            body {
+                padding: 5px !important;
+                font-size: 13px !important;
+            }
+            
+            .header h1 {
+                font-size: 18px !important;
+            }
+            
+            .header .deadline {
+                font-size: 13px !important;
+                padding: 6px 12px !important;
+            }
+            
+            .content {
+                padding: 10px !important;
+            }
+            
+            .question h3 {
+                font-size: 16px !important;
+            }
+            
+            .info-box {
+                font-size: 13px !important;
+                padding: 12px !important;
+            }
+            
+            .option {
+                padding: 10px !important;
+            }
+            
+            [style*="padding: 20px"],
+            [style*="padding: 25px"],
+            [style*="padding: 30px"] {
+                padding: 10px !important;
+            }
+            
+            [style*="font-size: 18px"] {
+                font-size: 15px !important;
+            }
+            
+            [style*="font-size: 20px"] {
+                font-size: 16px !important;
+            }
+        }
+
+        
+        /* Share button styling */
+        #shareBtn {
+            position: relative;
+            overflow: hidden;
+        }
+        
+        #shareBtn:hover {
+            transform: translateY(-2px);
+        }
+        
+        #shareBtn.copied {
+            background: #4caf50 !important;
+            animation: successPulse 0.3s ease;
+        }
+        
+        @keyframes successPulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+        
+        /* Responsive buttons layout */
+        @media (max-width: 768px) {
+            .buttons {
+                display: flex;
+                flex-direction: column;
+                gap: 10px;
+            }
+            
+            .btn {
+                width: 100%;
+            }
+        }
+        
+        @media (min-width: 769px) {
+            .buttons {
+                display: flex;
+                flex-wrap: wrap;
+                gap: 10px;
+                justify-content: center;
+            }
+            
+            .btn {
+                flex: 1;
+                min-width: 180px;
+                max-width: 250px;
+            }
+        }
+</style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>📋 Vodič za evidentiranje stvarnih vlasnika</h1>
+            <p>Jednostavan postupak u nekoliko koraka</p>
+            <p style="font-size: 14px; margin-top: 10px; opacity: 0.9;">
+                ℹ️ Informativni vodič - nije zvanična publikacija APR
+            </p>
+            <div class="deadline">ROK: 1. DECEMBAR 2025.</div>
+        </div>
+        
+        <div class="content">
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressBar"></div>
+            </div>
+            
+            <!-- Korak 0: Početak -->
+            <div class="step active" id="step0">
+                <div class="question">
+                    <h3>Dobrodošli!</h3>
+                    <p style="font-size: 16px; line-height: 1.8; margin-bottom: 20px;">
+                        Ovaj vodič će vam pomoći da razumete šta treba da uradite povodom novog Zakona o Centralnoj evidenciji stvarnih vlasnika.
+                    </p>
+                </div>
+                
+                <!-- DISCLAIMER -->
+                <div style="background: #f8f9fa; border: 2px solid #0C4076; border-radius: 10px; padding: 20px; margin-bottom: 25px;">
+                    <h4 style="color: #0C4076; margin-bottom: 12px;">ℹ️ Napomena o vodiču</h4>
+                    <p style="line-height: 1.8; color: #555; margin-bottom: 10px;">
+                        Ovaj vodič je kreiran isključivo u <strong>informativne svrhe</strong> kako bi se pomoglo preduzećima i drugim pravnim subjektima da bolje razumeju proces evidentiranja stvarnih vlasnika.
+                    </p>
+                    <p style="line-height: 1.8; color: #555; margin-bottom: 10px;">
+                        <strong>Vodič NIJE zvanični dokument</strong> i nema nikakve veze sa Agencijom za privredne registre (APR) niti bilo kojom drugom državnom institucijom.
+                    </p>
+                    <p style="line-height: 1.8; color: #555;">
+                        Za zvanične informacije i pravno obavezujuće uputstva, molimo vas da konsultujete <strong>zvanične izvore</strong> navedene na dnu ovog vodiča.
+                    </p>
+                </div>
+                
+                <!-- ZAŠTO SE OVO RADI -->
+                <div style="background: linear-gradient(135deg, #C6363C 0%, #8B2332 100%); color: white; padding: 25px; border-radius: 15px; margin-bottom: 20px;">
+                    <h4 style="color: white; margin-bottom: 15px; font-size: 20px;">✅ ZAŠTO JE OVO VAŽNO?</h4>
+                    <p style="line-height: 1.8;">
+                        Evidentiranjem pokazujete da je vlasništvo vaše firme <strong>TRANSPARENTNO</strong> i da nemate šta da krijete.
+                    </p>
+                    <p style="margin-top: 15px; font-weight: bold;">AKO SVE URADITE NA VREME:</p>
+                    <ul style="padding-left: 20px; margin-top: 10px; line-height: 1.8;">
+                        <li>✅ Pokazujete ozbiljnost i profesionalnost</li>
+                        <li>✅ Izbegavate kazne i probleme sa bankama</li>
+                        <li>✅ Održavate dobar poslovni ugled</li>
+                        <li>✅ Partneri vam veruju</li>
+                    </ul>
+                </div>
+                
+                <!-- KAZNE I SIVA LISTA -->
+                <div style="background: rgba(255,59,59,0.15); border-left: 5px solid #ff3b3b; padding: 25px; border-radius: 10px; margin-bottom: 20px;">
+                    <h4 style="margin-bottom: 15px; color: #d32f2f; font-size: 20px;">⚠️ AKO NE URADITE NA VREME:</h4>
+                    
+                    <div style="background: white; padding: 20px; border-radius: 10px; margin-bottom: 15px;">
+                        <p style="font-size: 18px; margin-bottom: 12px; color: #d32f2f;"><strong>💰 KAZNE:</strong></p>
+                        <ul style="list-style: none; padding-left: 0; color: #333;">
+                            <li style="margin: 10px 0; padding-left: 20px; border-left: 3px solid #ff3b3b;">
+                                Za firmu: <strong>500.000 - 2.000.000 dinara</strong>
+                            </li>
+                            <li style="margin: 10px 0; padding-left: 20px; border-left: 3px solid #ff3b3b;">
+                                Za odgovorno lice: <strong>50.000 - 150.000 dinara</strong>
+                            </li>
+                            <li style="margin: 10px 0; padding-left: 20px; border-left: 3px solid #ff3b3b;">
+                                Krivična odgovornost: <strong>6 meseci - 5 godina zatvora</strong> (ako prikrivate vlasništvo)
+                            </li>
+                        </ul>
+                    </div>
+                    
+                    <div style="background: white; padding: 20px; border-radius: 10px;">
+                        <p style="font-size: 18px; margin-bottom: 12px; color: #d32f2f;"><strong>📋 SIVA LISTA APR:</strong></p>
+                        <p style="margin: 10px 0; color: #333;">
+                            Vaša firma završava na <strong>javnoj listi APR</strong> gde su svi subjekti koji nisu ispunili obavezu.
+                        </p>
+                        <p style="margin: 12px 0; font-weight: bold; color: #d32f2f;">Posledice:</p>
+                        <ul style="list-style: none; padding-left: 0; color: #333;">
+                            <li style="margin: 8px 0;">❌ Banke vas tretiraju kao visokorizične</li>
+                            <li style="margin: 8px 0;">❌ Partneri vas izbegavaju</li>
+                            <li style="margin: 8px 0;">❌ Možete ostati bez poslovne saradnje</li>
+                            <li style="margin: 8px 0;">❌ Uništava poslovni ugled</li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <div class="question">
+                    <div class="info-box warning">
+                        <h4>⚠️ Važno!</h4>
+                        <p>Svi registrovani subjekti koji su ranije evidentirali stvarne vlasnike moraju da se usklade sa novim zakonom do <strong>1. decembra 2025. godine</strong>.</p>
+                    </div>
+                </div>
+                <div class="buttons">
+                    <button class="btn btn-primary" onclick="nextStep()">Počnite ➔</button>
+                </div>
+            </div>
+            
+            <!-- Korak 1: Tip subjekta -->
+            <div class="step" id="step1">
+                <div class="question">
+                    <h3>1. Koji tip subjekta ste?</h3>
+                    <div class="options">
+                        <div class="option">
+                            <input type="radio" name="subjectType" id="privrednoD" value="privredno">
+                            <label for="privrednoD">Privredno društvo (DOO, AD koje nije javno)</label>
+                        </div>
+                        <div class="option">
+                            <input type="radio" name="subjectType" id="zadruga" value="zadruga">
+                            <label for="zadruga">Zadruga</label>
+                        </div>
+                        <div class="option">
+                            <input type="radio" name="subjectType" id="udruzenje" value="udruzenje">
+                            <label for="udruzenje">Udruženje / Poslovno udruženje</label>
+                        </div>
+                        <div class="option">
+                            <input type="radio" name="subjectType" id="fondacija" value="fondacija">
+                            <label for="fondacija">Fondacija / Zadužbina</label>
+                        </div>
+                        <div class="option">
+                            <input type="radio" name="subjectType" id="ustanova" value="ustanova">
+                            <label for="ustanova">Ustanova</label>
+                        </div>
+                        <div class="option">
+                            <input type="radio" name="subjectType" id="ogranak" value="ogranak">
+                            <label for="ogranak">Ogranak / Predstavništvo stranog društva</label>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="info-box">
+                    <h4>ℹ️ Ko NEMA obavezu evidentiranja?</h4>
+                    <ul style="padding-left: 20px; line-height: 1.8;">
+                        <li>Preduzetnici</li>
+                        <li>Javna akcionarska društva</li>
+                        <li>Subjekti u stečaju ili prinudnoj likvidaciji</li>
+                        <li>Subjekti čiji je jedini član RS, AP ili JLS</li>
+                        <li>Privredne komore, političke stranke, sindikati, sportske organizacije, crkve</li>
+                    </ul>
+                </div>
+                
+                <div class="buttons">
+                    <button class="btn btn-secondary" onclick="prevStep()">⬅ Nazad</button>
+                    <button class="btn btn-primary" onclick="nextStep()">Dalje ➔</button>
+                </div>
+            </div>
+            
+            <!-- Korak 2: Da li ste već evidentirali? -->
+            <div class="step" id="step2">
+                <div class="question">
+                    <h3>2. Da li ste već evidentirali stvarnog vlasnika po starom zakonu?</h3>
+                    <div class="options">
+                        <div class="option">
+                            <input type="radio" name="alreadyRegistered" id="yesRegistered" value="yes">
+                            <label for="yesRegistered">Da, već sam evidentirao stvarnog vlasnika</label>
+                        </div>
+                        <div class="option">
+                            <input type="radio" name="alreadyRegistered" id="noRegistered" value="no">
+                            <label for="noRegistered">Ne, nisam još evidentirao</label>
+                        </div>
+                        <div class="option">
+                            <input type="radio" name="alreadyRegistered" id="notSure" value="notsure">
+                            <label for="notSure">Nisam siguran</label>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="info-box warning">
+                    <h4>⚠️ Važno!</h4>
+                    <p><strong>SVI</strong> subjekti (i oni koji su već evidentirali i oni koji nisu) moraju da se usklade sa novim Zakonom do <strong>1. decembra 2025.</strong></p>
+                </div>
+                
+                <div class="buttons">
+                    <button class="btn btn-secondary" onclick="prevStep()">⬅ Nazad</button>
+                    <button class="btn btn-primary" onclick="nextStep()">Dalje ➔</button>
+                </div>
+            </div>
+            
+            <!-- Korak 3: Da li znate ko je stvarni vlasnik? -->
+            <div class="step" id="step3">
+                <div class="question">
+                    <h3>3. Da li znate ko je stvarni vlasnik vašeg subjekta?</h3>
+                    <div class="options">
+                        <div class="option">
+                            <input type="radio" name="knowOwner" id="knowYes" value="yes">
+                            <label for="knowYes">Da, znam ko je stvarni vlasnik</label>
+                        </div>
+                        <div class="option">
+                            <input type="radio" name="knowOwner" id="knowNo" value="no">
+                            <label for="knowNo">Ne, nisam siguran ko je stvarni vlasnik</label>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="info-box warning">
+                    <h4>⚠️ Stvarni vlasnik = FIZIČKO lice</h4>
+                    <p>Stvarni vlasnik je <strong>UVEK fizičko lice (osoba)</strong>, nikada pravno lice (firma)!</p>
+                    <p style="margin-top: 10px;">To je osoba koja:</p>
+                    <ul style="padding-left: 20px; margin-top: 10px;">
+                        <li>Ima 25% ili više udela/akcija/glasova</li>
+                        <li>Ima preovlađujući uticaj (pravo veta na odluke)</li>
+                        <li>Finansira poslovanje subjekta</li>
+                    </ul>
+                </div>
+                
+                <div class="info-box">
+                    <h4>🌐 Niste sigurni ko je stvarni vlasnik - proverite na portalu!</h4>
+                    <p style="line-height: 1.8; margin-top: 10px;">
+                        Možete prvo da proverite da li ste već evidentirali stvarnog vlasnika:
+                    </p>
+                    <ol style="padding-left: 20px; margin-top: 10px; line-height: 1.8;">
+                        <li>Idite na <strong><a href="https://www.apr.gov.rs" target="_blank" style="color: #0C4076;">www.apr.gov.rs</a></strong></li>
+                        <li>Prijavite se sa svojim nalogom</li>
+                        <li>Idite na <strong>"Centralna evidencija stvarnih vlasnika"</strong></li>
+                        <li>Proverite da li postoji evidentiran stvarni vlasnik</li>
+                    </ol>
+                </div>
+                
+                <div class="info-box success">
+                    <h4>💼 Savet: Konsultujte se sa pravnikom</h4>
+                    <p style="line-height: 1.8;">
+                        Ako ne možete sami da odredite ko je stvarni vlasnik, imate kompleksnu vlasničku strukturu, ili želite da budete potpuno sigurni da je sve urađeno pravilno - <strong>preporučujemo konsultaciju sa pravnikom</strong> koji je specijalizovan za ovu oblast.
+                    </p>
+                    <p style="margin-top: 15px; line-height: 1.8;">
+                        Pravnik vam može pomoći da:
+                    </p>
+                    <ul style="padding-left: 20px; margin-top: 10px; line-height: 1.8;">
+                        <li>Odredite ko je stvarni vlasnik prema zakonu</li>
+                        <li>Pripremite potrebnu dokumentaciju</li>
+                        <li>Popunite zahtev na APR portalu</li>
+                        <li>Izbeknete greške koje mogu dovesti do kazni</li>
+                    </ul>
+                    <p style="margin-top: 15px; padding: 12px; background: rgba(76, 175, 80, 0.1); border-radius: 8px; font-size: 14px;">
+                        <strong>💡 Napomena:</strong> Ako nemate svog advokata, možete kontaktirati <strong>Advokata Jana Tirnanić</strong> (📞 064 242 8309) koji je specijalizovan za ovu oblast.
+                    </p>
+                </div>
+                
+                <div class="buttons">
+                    <button class="btn btn-secondary" onclick="prevStep()">⬅ Nazad</button>
+                    <button class="btn btn-primary" onclick="nextStep()">Dalje ➔</button>
+                </div>
+            </div>
+            
+            <!-- Korak 4: Priprema -->
+            <div class="step" id="step4">
+                <div class="question">
+                    <h3>4. Pripremite se za evidentiranje</h3>
+                    <p style="line-height: 1.8; margin-bottom: 20px;">
+                        Pre nego što krenete sa evidentiranjem na APR portalu, potrebno je da pripremite sledeće:
+                    </p>
+                </div>
+                
+                <div class="info-box">
+                    <h4>📋 Tehnički zahtevi:</h4>
+                    <ul style="padding-left: 20px; line-height: 1.8;">
+                        <li>Nalog na APR portalu (www.apr.gov.rs) ili eID nalog</li>
+                        <li>Kvalifikovani elektronski potpis</li>
+                        <li>Čitač elektronskih kartica</li>
+                        <li>Instalirana NEXU aplikacija</li>
+                    </ul>
+                </div>
+                
+                <div class="info-box success">
+                    <h4>📄 Potrebna dokumentacija:</h4>
+                    <ul style="padding-left: 20px; line-height: 1.8;">
+                        <li><strong>APR izvod</strong> ili <strong>Osnivački akt</strong> (ne stariji od 6 meseci)</li>
+                        <li><strong>Ugovor članova</strong> (ako postoji)</li>
+                        <li><strong>Kopija lične karte</strong> ili <strong>pasoša</strong> stvarnog vlasnika</li>
+                        <li><strong>Dokumenti koji dokazuju vlasništvo</strong></li>
+                        <li>Ako je stranac: <strong>Prevod i overa</strong> stranih dokumenata</li>
+                    </ul>
+                    <p style="margin-top: 15px; font-weight: bold; color: #f57c00;">
+                        ⚠️ Svu dokumentaciju morate čuvati interno NAJMANJE 5 GODINA!
+                    </p>
+                </div>
+                
+                <div class="info-box" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border: none;">
+                    <h4 style="color: white;">✅ ZAŠTO JE OVO VAŽNO?</h4>
+                    <p style="margin-top: 10px;">
+                        Evidentiranjem pokazujete da je vlasništvo vaše firme <strong>TRANSPARENTNO</strong> i da nemate šta da krijete.
+                    </p>
+                    <p style="margin-top: 15px; font-weight: bold;">AKO SVE URADITE NA VREME:</p>
+                    <ul style="padding-left: 20px; margin-top: 10px; line-height: 1.8;">
+                        <li>✅ Pokazujete ozbiljnost i profesionalnost</li>
+                        <li>✅ Izbegavate kazne i probleme sa bankama</li>
+                        <li>✅ Održavate dobar poslovni ugled</li>
+                        <li>✅ Partneri vam veruju</li>
+                    </ul>
+                </div>
+                
+                <div class="buttons">
+                    <button class="btn btn-secondary" onclick="prevStep()">⬅ Nazad</button>
+                    <button class="btn btn-primary" onclick="showResults()">Prikažite korake ➔</button>
+                </div>
+            </div>
+            
+            <!-- Korak 5: Finalni rezultati -->
+            <div class="step" id="step5">
+                <div class="print-only" style="text-align: center; padding: 20px; border-bottom: 2px solid #0C4076; margin-bottom: 20px;">
+                    <h2 style="color: #0C4076; margin-bottom: 10px;">📋 VODIČ ZA EVIDENTIRANJE STVARNIH VLASNIKA</h2>
+                    <p>Agencija za privredne registre</p>
+                    <p><strong>📅 Datum štampanja:</strong> <span id="printDate"></span></p>
+                    <p><strong>ROK: 1. DECEMBAR 2025.</strong></p>
+                </div>
+                
+                <div class="print-only" style="background: #f8f9fa; padding: 20px; border-radius: 10px; margin: 20px 0; border-left: 5px solid #0C4076;">
+                    <h3 style="margin-bottom: 15px; color: #0C4076;">📊 VAŠI ODGOVORI:</h3>
+                    <div id="userAnswers"></div>
+                </div>
+                
+                <div class="result-panel">
+                    <h3>✅ Vaši sledeći koraci (ako radite online sami)</h3>
+                    <div class="action-steps">
+                        <ol>
+                            <li><strong>Odredite stvarnog vlasnika</strong> - To mora biti fizičko lice koje ispunjava kriterijume (25%+ udela, preovlađujući uticaj, ili finansira poslovanje)</li>
+                            <li><strong>Prikupite dokumentaciju</strong> - APR izvod ili Osnivački akt (ne stariji od 6 meseci), Ugovor članova, kopija lične karte/pasoša stvarnog vlasnika</li>
+                            <li><strong>Prijavite se na portal</strong> - Idite na <strong>www.apr.gov.rs</strong> → Centralna evidencija stvarnih vlasnika</li>
+                            <li><strong>Popunite podatke</strong> - Ime i prezime stvarnog vlasnika, JMBG/broj pasoša, datum rođenja, procenat učešća</li>
+                            <li><strong>Učitajte dokumentaciju</strong> - Sve dokumente učitavate u PDF formatu</li>
+                            <li><strong>Potpišite elektronskim potpisom</strong> - Koristite kvalifikovani elektronski potpis</li>
+                            <li><strong>Preuzmite potvrdu</strong> - Sačuvajte potvrdu o evidentiranju</li>
+                            <li><strong>Arhivirajte dokumentaciju</strong> - Čuvajte svu dokumentaciju interno NAJMANJE 5 GODINA</li>
+                            <li><strong>Verifikacija</strong> - Nakon godinu dana, morate da potvrdite podatke (godišnja verifikacija)</li>
+                            <li><strong>Ažuriranje</strong> - Ako se promeni vlasništvo, imate 30 dana da ažurirate podatke</li>
+                            <li><strong>Rok</strong> - SVE OVO MORATE URADITI DO <strong>1. DECEMBRA 2025.</strong></li>
+                        </ol>
+                    </div>
+                    
+                    <div style="background: rgba(255,255,255,0.15); padding: 20px; border-radius: 10px; margin-top: 25px; border-left: 4px solid white;">
+                        <h4 style="margin-bottom: 15px; color: white;">💼 Alternativa: Angažovanje stručnjaka</h4>
+                        <p style="line-height: 1.8;">
+                            Mnogi subjekti, posebno oni sa kompleksnijim vlasničkim strukturama, biraju da angažuju <strong>advokata ili računovođu</strong> koji će obaviti evidentiranje umesto njih.
+                        </p>
+                        <p style="margin-top: 15px; line-height: 1.8;">
+                            Ovo je preporučljivo ako:
+                        </p>
+                        <ul style="padding-left: 20px; margin-top: 10px; line-height: 1.8;">
+                            <li>Imate kompleksnu vlasničku strukturu</li>
+                            <li>Imate strane članove u društvu</li>
+                            <li>Niste sigurni kako da određujete stvarnog vlasnika</li>
+                            <li>Želite da budete sigurni da je sve urađeno pravilno</li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <div class="link-box">
+                    <h4 style="margin-bottom: 15px; color: #0C4076;">🔗 Korisni linkovi:</h4>
+                    <p><strong>🌐 Portal APR:</strong> <a href="https://www.apr.gov.rs" target="_blank">www.apr.gov.rs</a></p>
+                    <p><strong>📧 Email podrška:</strong> <a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="0d7e797b6c7f63627b616c7e63647e797b624d6c7d7f236a627b237f7e">[email&#160;protected]</a></p>
+                    <p><strong>🔧 Tehnička podrška:</strong> <a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="4b382f0b2a3b39652c243d653938">[email&#160;protected]</a></p>
+                </div>
+                
+                <div class="link-box" style="background: #f8f9fa; border-left: 4px solid #0C4076; margin-top: 20px;">
+                    <h4 style="margin-bottom: 15px; color: #0C4076;">🧑‍⚖️ Pravna pomoć (ako vam je potrebna)</h4>
+                    <p style="line-height: 1.8; color: #555;">
+                        Ako nemate svog advokata ili računovođu, možete kontaktirati:
+                    </p>
+                    <div style="margin-top: 15px; padding: 15px; background: white; border-radius: 8px;">
+                        <p style="margin-bottom: 8px;"><strong>Advokat Jana Tirnanić</strong></p>
+                        <p style="font-size: 14px; color: #666; margin-bottom: 12px;">Specijalizovan za privredne subjekte i evidentiranje stvarnih vlasnika</p>
+                        <p style="margin: 5px 0;"><strong>📞</strong> <a href="tel:+381642428309" style="color: #0C4076;">064 242 8309</a></p>
+                        <p style="margin: 5px 0;"><strong>📧</strong> <a href="/cdn-cgi/l/email-protection#08696c7e267c617a666966616b62696669486f65696164266b6765" style="color: #0C4076;"><span class="__cf_email__" data-cfemail="b8d9dcce96ccd1cad6d9d6d1dbd2d9d6d9f8dfd5d9d1d496dbd7d5">[email&#160;protected]</span></a></p>
+                        <p style="margin-top: 12px; font-size: 13px; color: #666;">Online konsultacije dostupne za celu Srbiju</p>
+                    </div>
+                </div>
+                
+                <div style="background: rgba(255,255,255,0.1); padding: 20px; border-radius: 10px; margin-top: 20px; color: white;">
+                    <h4 style="margin-bottom: 10px; color: white;">Ne zaboravite!</h4>
+                    <p style="font-size: 18px;"><strong>Rok: 1. DECEMBAR 2025. godine</strong></p>
+                    <p style="margin-top: 10px;">Nakon toga sledi godišnja verifikacija - svakih godinu dana morate da potvrdite da su podaci tačni!</p>
+                </div>
+                
+                <div style="background: rgba(255,59,59,0.2); border-left: 5px solid #ff3b3b; padding: 20px; border-radius: 10px; margin-top: 20px; color: white;">
+                    <h4 style="margin-bottom: 15px;">⚠️ AKO NE URADITE NA VREME:</h4>
+                    <div style="background: rgba(0,0,0,0.3); padding: 15px; border-radius: 8px; margin-bottom: 15px;">
+                        <p style="font-size: 16px; margin-bottom: 10px;"><strong>💰 KAZNE:</strong></p>
+                        <ul style="list-style: none; padding-left: 0;">
+                            <li style="margin: 8px 0;">• Za firmu: <strong>500.000 - 2.000.000 dinara</strong></li>
+                            <li style="margin: 8px 0;">• Za odgovorno lice: <strong>50.000 - 150.000 dinara</strong></li>
+                            <li style="margin: 8px 0;">• Krivična odgovornost: <strong>6 meseci - 5 godina zatvora</strong> (ako prikrivate vlasništvo)</li>
+                        </ul>
+                    </div>
+                    
+                    <div style="background: rgba(0,0,0,0.3); padding: 15px; border-radius: 8px;">
+                        <p style="font-size: 16px; margin-bottom: 10px;"><strong>📋 SIVA LISTA:</strong></p>
+                        <p style="margin: 8px 0;">Vaša firma završava na javnoj listi APR gde su svi subjekti koji nisu ispunili obavezu.</p>
+                        <p style="margin: 8px 0;"><strong>Posledice:</strong></p>
+                        <ul style="list-style: none; padding-left: 0; margin-top: 10px;">
+                            <li style="margin: 5px 0;">❌ Banke vas tretiraju kao visokorizične</li>
+                            <li style="margin: 5px 0;">❌ Partneri vas izbegavaju</li>
+                            <li style="margin: 5px 0;">❌ Možete ostati bez poslovne saradnje</li>
+                            <li style="margin: 5px 0;">❌ Uništava poslovni ugled</li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <!-- PRINT ONLY CHECKLIST -->
+                <div class="print-only" style="margin-top: 30px; background: #f8f9fa; padding: 20px; border-radius: 10px;">
+                    <h3 style="margin-bottom: 15px;">✅ ČEKLISTA - Šta treba da imate:</h3>
+                    <ul style="list-style: none; padding: 0;">
+                        <li style="padding: 8px; margin: 5px 0; border-left: 3px solid #4caf50;">☐ Nalog na APR portalu ili eID nalog</li>
+                        <li style="padding: 8px; margin: 5px 0; border-left: 3px solid #4caf50;">☐ Kvalifikovani elektronski potpis</li>
+                        <li style="padding: 8px; margin: 5px 0; border-left: 3px solid #4caf50;">☐ Čitač elektronskih kartica</li>
+                        <li style="padding: 8px; margin: 5px 0; border-left: 3px solid #4caf50;">☐ NEXU aplikacija</li>
+                        <li style="padding: 8px; margin: 5px 0; border-left: 3px solid #4caf50;">☐ APR izvod (< 6 meseci)</li>
+                        <li style="padding: 8px; margin: 5px 0; border-left: 3px solid #4caf50;">☐ Ugovor članova / Osnivački akt</li>
+                        <li style="padding: 8px; margin: 5px 0; border-left: 3px solid #4caf50;">☐ Kopija pasoša stvarnog vlasnika</li>
+                        <li style="padding: 8px; margin: 5px 0; border-left: 3px solid #4caf50;">☐ Dokumenti o vlasništvu</li>
+                    </ul>
+                    <div style="background: #e3f2fd; padding: 15px; border-radius: 8px; margin-top: 20px; border-left: 4px solid #2196f3;">
+                        <p style="margin: 0;"><strong>📂 NAPOMENA:</strong> Dokumentaciju čuvati <strong>NAJMANJE 5 GODINA</strong>!</p>
+                    </div>
+                </div>
+                
+                <!-- PRINT ONLY FOOTER -->
+                <div class="print-only" style="text-align: center; padding: 20px; border-top: 2px solid #e0e0e0; margin-top: 30px; font-size: 14px; color: #666;">
+                    <p><strong>Agencija za privredne registre</strong></p>
+                    <p>Centralna evidencija stvarnih vlasnika</p>
+                    <p style="margin-top: 10px;">📧 <a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="d2a1a6a4b3a0bcbda4beb3a1bcbba1a6a4bd92b3a2a0fcb5bda4fca0a1">[email&#160;protected]</a> | 🔧 <a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="7e0d0a081f0c101108121f0d10170d0a08113e1f0e0c50191108500c0d">[email&#160;protected]</a></p>
+                    
+                    <div style="border-top: 2px solid #e0e0e0; margin: 20px 0; padding-top: 15px;">
+                        <p style="margin-bottom: 10px;"><strong>🧑‍⚖️ Pravna pomoć</strong></p>
+                        <p style="margin: 5px 0;"><strong>Advokat Jana Tirnanić</strong></p>
+                        <p style="margin: 8px 0;">📞 064 242 8309 | 📧 <a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="9be8efedfae9f5f4edf7fae8f5f2e8efedf4dbfaebe9b5fcf4edb5e9e8">[email&#160;protected]</a></p>
+                        <p style="margin: 5px 0; font-size: 12px;">Online konsultacije</p>
+                    </div>
+                </div>
+                
+                <!-- REFERENCE I ZVANIČNI IZVORI -->
+                <div style="background: #f8f9fa; border-top: 3px solid #0C4076; padding: 25px; margin-top: 15px; border-radius: 10px;">
+                    <h4 style="color: #0C4076; margin-bottom: 20px; text-align: center;">📚 Zvanični izvori i reference</h4>
+                    
+                    <div style="margin-bottom: 20px;">
+                        <p style="font-weight: bold; color: #0C4076; margin-bottom: 10px;">🏛️ Agencija za privredne registre (APR):</p>
+                        <ul style="list-style: none; padding-left: 0; line-height: 2;">
+                            <li>🌐 Portal: <a href="https://www.apr.gov.rs" target="_blank" style="color: #0C4076; font-weight: 600;">www.apr.gov.rs</a></li>
+                            <li>📧 Email: <a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="2e4f4a58005a475c404f40474d444f404f6e49434f4742004d4143">[email&#160;protected]</a></li>
+                            <li>🔧 Tehnička podrška: <a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="157471633b617c677b747b7c767f747b74557278747c793b767a78">[email&#160;protected]</a></li>
+                            <li>📞 Kontakt centar: <strong>011 20 64 452</strong></li>
+                        </ul>
+                    </div>
+                    
+                    <div style="margin-bottom: 20px;">
+                        <p style="font-weight: bold; color: #0C4076; margin-bottom: 10px;">📜 Zakoni i propisi:</p>
+                        <ul style="list-style: none; padding-left: 0; line-height: 2;">
+                            <li>📄 <a href="https://www.pravno-informacioni-sistem.rs/SlGlasnikPortal/eli/rep/sgrs/skupstina/zakon/2024/75/1" target="_blank" style="color: #0C4076;">Zakon o centralnej evidenciji stvarnih vlasnika ("Sl. glasnik RS", br. 75/2024)</a></li>
+                            <li>📄 <a href="https://www.apr.gov.rs/registri/centralna-evidencija-stvarnih-vlasnika.4066.html" target="_blank" style="color: #0C4076;">APR - Centralna evidencija stvarnih vlasnika</a></li>
+                        </ul>
+                    </div>
+                    
+                    <div style="margin-bottom: 20px;">
+                        <p style="font-weight: bold; color: #0C4076; margin-bottom: 10px;">📋 Korisna dokumentacija:</p>
+                        <ul style="list-style: none; padding-left: 0; line-height: 2;">
+                            <li>📖 <a href="https://www.apr.gov.rs/upload/Portals/3/CESV/Prirucnik_za_korisnike.pdf" target="_blank" style="color: #0C4076;">Priručnik za korisnike (APR)</a></li>
+                            <li>❓ <a href="https://www.apr.gov.rs/upload/Portals/3/CESV/FAQ.pdf" target="_blank" style="color: #0C4076;">Često postavljana pitanja (FAQ)</a></li>
+                        </ul>
+                    </div>
+                    
+                    <div style="background: white; padding: 15px; border-radius: 8px; border-left: 4px solid #C6363C; margin-top: 20px;">
+                        <p style="margin: 0; font-size: 14px; color: #666; line-height: 1.8;">
+                            <strong>⚠️ Napomena:</strong> Ovaj vodič je informativnog karaktera i može sadržati zastarele informacije. Za najnovije i pravno obavezujuće informacije, molimo vas da uvek konsultujete zvanične izvore.
+                        </p>
+                    </div>
+                </div>
+                
+                <div class="buttons" style="margin-top: 15px;">
+                    <button class="btn btn-secondary" onclick="resetGuide()">🔄 Počnite ispočetka</button>
+                    <button class="btn btn-secondary" onclick="shareGuide()" id="shareBtn">📤 Podeli vodič</button>
+                    <button class="btn btn-primary" onclick="preparePrint()">🖨️ Odštampajte korake</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- ANIMATED SCROLL ARROW -->
+    <div class="scroll-arrow" id="scrollArrow" onclick="scrollToButtons()">
+        <div class="scroll-arrow-inner">
+            <span>Skrolujte dole</span>
+            <span class="arrow-icon">⬇</span>
+        </div>
+    </div>
+    
+    <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+        let currentStep = 0;
+        const totalSteps = 5;
+        let userAnswers = {};
+        
+        // SCROLL ARROW FUNCTIONALITY
+        function showScrollArrow() {
+            const arrow = document.getElementById('scrollArrow');
+            if (arrow) {
+                arrow.classList.add('show');
+                setTimeout(() => {
+                    hideScrollArrow();
+                }, 5000);
+            }
+        }
+        
+        function hideScrollArrow() {
+            const arrow = document.getElementById('scrollArrow');
+            if (arrow) {
+                arrow.classList.remove('show');
+            }
+        }
+        
+        function scrollToButtons() {
+            const buttons = document.querySelector('.step.active .buttons');
+            if (buttons) {
+                buttons.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                hideScrollArrow();
+            }
+        }
+        
+        // Add event listeners
+        document.addEventListener('DOMContentLoaded', function() {
+            // Make entire option box clickable
+            const optionBoxes = document.querySelectorAll('.option');
+            optionBoxes.forEach(box => {
+                box.addEventListener('click', function() {
+                    const radio = this.querySelector('input[type="radio"]');
+                    if (radio) {
+                        radio.checked = true;
+                        
+                        // Remove 'selected' class from all options with same name
+                        const radioName = radio.getAttribute('name');
+                        document.querySelectorAll(`input[name="${radioName}"]`).forEach(r => {
+                            r.closest('.option').classList.remove('selected');
+                        });
+                        
+                        // Add 'selected' class to this option
+                        this.classList.add('selected');
+                        
+                        // Trigger change event to show arrow
+                        radio.dispatchEvent(new Event('change'));
+                    }
+                });
+            });
+            
+            // Listen for radio button changes to show scroll arrow
+            const radioButtons = document.querySelectorAll('input[type="radio"]');
+            radioButtons.forEach(radio => {
+                radio.addEventListener('change', function() {
+                    setTimeout(() => {
+                        showScrollArrow();
+                    }, 300);
+                });
+            });
+            
+            let scrollTimeout;
+            window.addEventListener('scroll', function() {
+                clearTimeout(scrollTimeout);
+                scrollTimeout = setTimeout(() => {
+                    hideScrollArrow();
+                }, 100);
+            });
+        });
+        
+        function updateProgress() {
+            const progress = (currentStep / totalSteps) * 100;
+            document.getElementById('progressBar').style.width = progress + '%';
+        }
+        
+        function showStep(step) {
+            saveCurrentAnswers();
+            hideScrollArrow();
+            
+            document.querySelectorAll('.step').forEach(s => s.classList.remove('active'));
+            document.getElementById('step' + step).classList.add('active');
+            updateProgress();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+        
+        function saveCurrentAnswers() {
+            const subjectType = document.querySelector('input[name="subjectType"]:checked');
+            if (subjectType) {
+                userAnswers.subjectType = subjectType.nextElementSibling.textContent;
+            }
+            
+            const registered = document.querySelector('input[name="alreadyRegistered"]:checked');
+            if (registered) {
+                userAnswers.alreadyRegistered = registered.nextElementSibling.textContent;
+            }
+            
+            const knowOwner = document.querySelector('input[name="knowOwner"]:checked');
+            if (knowOwner) {
+                userAnswers.knowOwner = knowOwner.nextElementSibling.textContent;
+            }
+        }
+        
+        function nextStep() {
+            if (currentStep < totalSteps) {
+                currentStep++;
+                showStep(currentStep);
+            }
+        }
+        
+        function prevStep() {
+            if (currentStep > 0) {
+                currentStep--;
+                showStep(currentStep);
+            }
+        }
+        
+        function showResults() {
+            saveCurrentAnswers();
+            currentStep = 5;
+            showStep(5);
+        }
+        
+        function resetGuide() {
+            currentStep = 0;
+            userAnswers = {};
+            showStep(0);
+            document.querySelectorAll('input[type="radio"]').forEach(input => input.checked = false);
+        }
+        
+        function preparePrint() {
+            // Set print date
+            const now = new Date();
+            const dateStr = now.toLocaleDateString('sr-RS', { 
+                year: 'numeric', 
+                month: 'long', 
+                day: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit'
+            });
+            document.getElementById('printDate').textContent = dateStr;
+            
+            // Populate user answers
+            const summaryDiv = document.getElementById('userAnswers');
+            let summaryHTML = '';
+            
+            if (Object.keys(userAnswers).length > 0) {
+                if (userAnswers.subjectType) {
+                    summaryHTML += `<p style="margin: 8px 0;"><strong>Tip subjekta:</strong> ${userAnswers.subjectType}</p>`;
+                }
+                if (userAnswers.alreadyRegistered) {
+                    summaryHTML += `<p style="margin: 8px 0;"><strong>Status evidentiranja:</strong> ${userAnswers.alreadyRegistered}</p>`;
+                }
+                if (userAnswers.knowOwner) {
+                    summaryHTML += `<p style="margin: 8px 0;"><strong>Poznavanje stvarnog vlasnika:</strong> ${userAnswers.knowOwner}</p>`;
+                }
+                summaryDiv.innerHTML = summaryHTML;
+            } else {
+                summaryDiv.innerHTML = '<p style="margin: 8px 0; font-style: italic;">Niste odgovorili na pitanja u vodiču.</p>';
+            }
+            
+            // Trigger print
+            window.print();
+        }
+        
+        // Share functionality
+        function shareGuide() {
+            const shareData = {
+                title: 'Vodič za evidentiranje stvarnih vlasnika',
+                text: 'Jednostavan vodič za evidentiranje stvarnih vlasnika - ROK: 1. DECEMBAR 2025.',
+                url: window.location.href
+            };
+            
+            // Check if Web Share API is supported (mobile devices)
+            if (navigator.share) {
+                navigator.share(shareData)
+                    .then(() => console.log('Successfully shared'))
+                    .catch((error) => console.log('Error sharing:', error));
+            } else {
+                // Fallback for desktop - copy link to clipboard
+                const url = window.location.href;
+                navigator.clipboard.writeText(url).then(() => {
+                    const btn = document.getElementById('shareBtn');
+                    const originalText = btn.innerHTML;
+                    btn.innerHTML = '✅ Link kopiran!';
+                    btn.style.background = '#4caf50';
+                    
+                    setTimeout(() => {
+                        btn.innerHTML = originalText;
+                        btn.style.background = '';
+                    }, 2000);
+                }).catch((error) => {
+                    alert('Link: ' + url + '\n\nKopirajte ovaj link ručno.');
+                });
+            }
+        }
+        
+        // Initialize
+        updateProgress();
+    </script>
+</body>
+</html>
