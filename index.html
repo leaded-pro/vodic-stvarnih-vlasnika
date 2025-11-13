@@ -216,6 +216,28 @@
             background: #d0d0d0;
         }
         
+        .btn-success {
+            background: #4caf50;
+            color: white;
+        }
+        
+        .btn-success:hover {
+            background: #45a049;
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(76, 175, 80, 0.3);
+        }
+        
+        .btn-light {
+            background: #f5f5f5;
+            color: #666;
+            border: 2px solid #e0e0e0;
+        }
+        
+        .btn-light:hover {
+            background: #eeeeee;
+            border-color: #d0d0d0;
+        }
+        
         .result-panel {
             background: linear-gradient(135deg, #0C4076 0%, #1a5fa1 100%);
             color: white;
@@ -994,7 +1016,7 @@
                         <p style="margin-bottom: 8px;"><strong>Advokat Jana Tirnanić</strong></p>
                         <p style="font-size: 14px; color: #666; margin-bottom: 12px;">Nudi uslugu evidentiranja stvarnih vlasnika za privredne subjekte</p>
                         <p style="margin: 5px 0;"><strong>📞</strong> <a href="tel:+381642428309" style="color: #0C4076; text-decoration: none;">064 242 8309</a></p>
-                        <p style="margin: 5px 0;"><strong>📧</strong> <a href="mailto:adv.tirnanicjana@gmail.com" style="color: #0C4076; text-decoration: none;">adv.tirnanicjana@gmail.com</a></p>
+                        <p style="margin: 5px 0;"><strong>📧</strong> <a href="/cdn-cgi/l/email-protection#0e6f6a78207a677c606f60676d646f606f4e69636f6762206d6163" style="color: #0C4076; text-decoration: none;"><span class="__cf_email__" data-cfemail="accdc8da82d8c5dec2cdc2c5cfc6cdc2cdeccbc1cdc5c082cfc3c1">[email&#160;protected]</span></a></p>
                         <p style="margin-top: 12px; font-size: 13px; color: #666;">Online konsultacije dostupne za celu Srbiju</p>
                     </div>
                 </div>
@@ -1032,7 +1054,7 @@
                     <div style="border-top: 2px solid #e0e0e0; margin: 20px 0; padding-top: 15px;">
                         <p style="margin-bottom: 10px;"><strong>👨‍⚖️ Stručna pomoć</strong></p>
                         <p style="margin: 5px 0;"><strong>Advokat Jana Tirnanić</strong></p>
-                        <p style="margin: 8px 0;">📞 <a href="tel:+381642428309" style="color: #666; text-decoration: none;">064 242 8309</a> | 📧 <a href="mailto:adv.tirnanicjana@gmail.com" style="color: #666; text-decoration: none;">adv.tirnanicjana@gmail.com</a></p>
+                        <p style="margin: 8px 0;">📞 <a href="tel:+381642428309" style="color: #666; text-decoration: none;">064 242 8309</a> | 📧 <a href="/cdn-cgi/l/email-protection#127376643c667b607c737c7b7178737c7352757f737b7e3c717d7f" style="color: #666; text-decoration: none;"><span class="__cf_email__" data-cfemail="88e9ecfea6fce1fae6e9e6e1ebe2e9e6e9c8efe5e9e1e4a6ebe7e5">[email&#160;protected]</span></a></p>
                         <p style="margin: 5px 0; font-size: 12px;">Online konsultacije</p>
                     </div>
                 </div>
@@ -1065,17 +1087,22 @@
                         </ul>
                     </div>
                     
-                    <div style="background: white; padding: 15px; border-radius: 8px; border-left: 4px solid #C6363C; margin-top: 20px;">
+                    <div style="background: white; padding: 15px; border-radius: 8px; border-left: 4px solid #4caf50; margin-top: 20px;">
                         <p style="margin: 0; font-size: 14px; color: #666; line-height: 1.8;">
-                            <strong>⚠️ Napomena:</strong> Ovaj vodič je informativnog karaktera i može sadržati zastarele informacije. Za najnovije i pravno obavezujuće informacije, molimo vas da uvek konsultujete zvanične izvore.
+                            <strong>ℹ️ Napomena:</strong> Ovaj vodič je ažuriran <strong>13. novembra 2025.</strong> i sadrži sve potrebne informacije i zvanične izvore. Za dodatna pitanja ili specifične slučajeve, možete konsultovati linkove iz sekcije "Zvanični izvori" ili kontaktirati APR.
                         </p>
                     </div>
                 </div>
                 
-                <div class="buttons" style="margin-top: 15px;">
-                    <button class="btn btn-secondary" onclick="resetGuide()">🔄 Počnite ispočetka</button>
-                    <button class="btn btn-secondary" onclick="shareGuide()" id="shareBtn">📤 Podeli vodič</button>
-                    <button class="btn btn-primary" onclick="preparePrint()">🖨️ Odštampajte korake</button>
+                <!-- Dugme Počnite ispočetka - iznad -->
+                <div style="margin-top: 15px; text-align: center;">
+                    <button class="btn btn-light" onclick="resetGuide()">🔄 Počnite ispočetka</button>
+                </div>
+                
+                <!-- Štampanje i Podeli - u istoj ravni -->
+                <div style="display: flex; gap: 15px; margin-top: 15px;">
+                    <button class="btn btn-primary" onclick="preparePrint()" style="flex: 1;">🖨️ Odštampajte korake</button>
+                    <button class="btn btn-success" onclick="shareGuide()" id="shareBtn" style="flex: 1;">📤 Podeli vodič</button>
                 </div>
             </div>
         </div>
@@ -1089,13 +1116,17 @@
         </div>
     </div>
     
-    <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+    <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
         let currentStep = 0;
         const totalSteps = 5;
         let userAnswers = {};
         
         // SCROLL ARROW FUNCTIONALITY
         function showScrollArrow() {
+            // Ne prikazuj arrow na koraku 3 (currentStep === 2) jer je stranica kratka
+            if (currentStep === 2) {
+                return;
+            }
             const arrow = document.getElementById('scrollArrow');
             if (arrow) {
                 arrow.classList.add('show');
@@ -1278,10 +1309,10 @@
                     const btn = document.getElementById('shareBtn');
                     const originalText = btn.innerHTML;
                     btn.innerHTML = '✅ Link kopiran!';
-                    btn.style.background = '#4caf50';
+                    btn.style.background = '#2e7d32'; // Tamnozelena za potvrdu
                     
                     setTimeout(() => {
-                        btn.innerHTML = originalText;
+                               btn.innerHTML = originalText;
                         btn.style.background = '';
                     }, 2000);
                 }).catch((err) => {
